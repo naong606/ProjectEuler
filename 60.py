@@ -1,7 +1,7 @@
 import math
 import itertools
 
-MAX = 1000
+MAX = 10000
 isPrime = [True] * MAX
 isPrime[0] = isPrime[1] = False
 for i in range(2, int(math.sqrt(MAX))+1):
@@ -26,24 +26,48 @@ graph = []
 for _ in range(len(primes)):
     graph.append([False]*len(primes))
 
+pairs = []
 for i in range(len(primes)):
     p1 = primes[i]
-    for j in range(len(primes)):
+    for j in range(i+1, len(primes)):
         p2 = primes[j]
         graph[i][j] = isp(int(str(p1)+str(p2))) and isp(int(str(p2)+str(p1)))
-    graph[i][i] = True
+        if graph[i][j]:
+            pairs.append([i, j])
 
-for i in range(len(primes)):
-    if graph[i].count(True) >= 4:
-        print primes[i]
-'''
-for comb in itertools.combinations(range(len(primes)), 4):
-    try:
-        for i in comb:
-            for j in comb:
-                assert graph[i][j]
-        for i in comb:
-            print primes[i],
-        print
-    except:
-        None'''
+triples = []
+for p in pairs:
+    for i in range(p[1]+1, len(primes)):
+        flag = True
+        for e in p:
+            if not graph[e][i]:
+                flag = False
+                break
+        if flag:
+            triples.append(p+[i])
+
+quart = []
+for p in triples:
+    for i in range(p[1]+1, len(primes)):
+        flag = True
+        for e in p:
+            if not graph[e][i]:
+                flag = False
+                break
+        if flag:
+            quart.append(p+[i])
+
+pent = []
+for p in quart:
+    for i in range(p[1]+1, len(primes)):
+        flag = True
+        for e in p:
+            if not graph[e][i]:
+                flag = False
+                break
+        if flag:
+            pent.append(p+[i])
+
+
+for p in pent:
+    print("({0}, {1}, {2}, {3}, {4})".format(primes[p[0]], primes[p[1]], primes[p[2]], primes[p[3]], primes[p[4]]))
